@@ -9,5 +9,6 @@ namespace Forum.Domain.ViewModels.Comment
     public class CommentToAddViewModel
     {
         public string Text { get; set; }
+        public int TopicId { get; set; }
     }
 }

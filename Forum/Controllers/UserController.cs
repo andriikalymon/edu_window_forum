@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Web.Email;
 using ProjectConstants = Forum.Web.Constants.Constants;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;

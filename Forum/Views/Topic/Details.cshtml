@@ -18,7 +18,7 @@
             @if (comment.CanBeDeleted)
             {
                 <span> - </span>
-                @Html.ActionLink("delete", "Delete", "Comment", new { id = comment.Id })
+                @Html.ActionLink("delete", "Delete", "Comment", new { id = comment.Id, topicId = Model.Item1.Id })
             }
         </div>
         <div class="card-body">
@@ -29,6 +29,7 @@
 }
 @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
 {
+    <input type="hidden" name="TopicId" value="@Model.Item1.Id" />
     <textarea style="border-radius:5px" name="Text" cols="155" rows="3"></textarea>
     <br>
     <button type="submit" class="btn btn-primary">Comment</button>

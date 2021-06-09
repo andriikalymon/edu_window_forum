@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Forum.Web.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class TopicController : Controller
     {
@@ -16,7 +17,6 @@ namespace Forum.Web.Controllers
 
         public TopicController(IRepository<Topic> topicRepository) => this.topicRepository = topicRepository;
 
-        [Authorize]
         [Route("~/Topic/AllTopics")]
         public IActionResult AllTopics()
         {
@@ -33,7 +33,6 @@ namespace Forum.Web.Controllers
                 }));
         }
 
-        [Authorize]
         [HttpGet]
         [Route("~/Topic/Details")]
         public async Task<IActionResult> Details(int? id)
@@ -43,7 +42,6 @@ namespace Forum.Web.Controllers
 
             if(topic is not null)
             {
-                TempData["SelectedTopic"] = topic.Id;
                 return View((new TopicToDetailsViewModel()
                 {
                     Id = topic.Id,
@@ -64,7 +62,6 @@ namespace Forum.Web.Controllers
             return RedirectToAction("AllTopics", "Topic");
         }
 
-        [Authorize]
         [Route("~/Topic/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

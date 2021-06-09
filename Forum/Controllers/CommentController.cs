@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Forum.Web.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class CommentController : Controller
     {
@@ -17,35 +18,27 @@ namespace Forum.Web.Controllers
 
         public CommentController(IRepository<Comment> commentRepository) => this.commentRepository = commentRepository;
 
-        [Authorize]
         [HttpPost]
         [Route("~/Comment/Create")]
         public async Task<IActionResult> Create(CommentToAddViewModel model)
         {
-            int selectedTopic = (int)TempData["SelectedTopic"];
-            TempData.Keep();
-
-            var comment = new Comment() { Text = model.Text, TopicId = selectedTopic, UserId = int.Parse(User.Identity.Name) };
+            var comment = new Comment() { Text = model.Text, TopicId = model.TopicId, UserId = int.Parse(User.Identity.Name) };
             if(ModelState.IsValid)
             {
                 await commentRepository.AddAsync(comment);
                 await commentRepository.SaveChangesAsync();
             }
 
-            return RedirectToAction("Details", "Topic", new { id = selectedTopic });
+            return RedirectToAction("Details", "Topic", new { id = model.TopicId });
         }
 
-        [Authorize]
         [Route("~/Comment/Delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int topicId)
         {
-            int selectedTopic = (int)TempData["SelectedTopic"];
-            TempData.Keep();
-
             commentRepository.Delete(new Comment() { Id = id });
             await commentRepository.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Topic", new { id = selectedTopic });
+            return RedirectToAction("Details", "Topic", new { id = topicId });
         }
     }
 }
