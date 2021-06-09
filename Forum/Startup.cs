@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Forum.Domain.Extensions;
 using Forum.Web.Extensions;
 using FluentValidation.AspNetCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Forum.Web
 {
@@ -25,6 +27,13 @@ namespace Forum.Web
         {
             services.AddDbContext(Configuration.GetConnectionString("DefaultConnection"));
             services.AddRepositories();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => 
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/User/Authenticate");
+                });
+
             services.AddControllersWithViews().AddFluentValidation();
             services.AddFluentValidators();
         }
@@ -44,6 +53,7 @@ namespace Forum.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

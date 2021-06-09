@@ -6,6 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Web.Email;
 using ProjectConstants = Forum.Web.Constants.Constants;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Forum.Web.Controllers
 {
@@ -32,8 +37,9 @@ namespace Forum.Web.Controllers
                 {
                     if (loginedUser.Password == user.Password)
                     {
-                        TempData["UserId"] = loginedUser.Id;
-                        return RedirectToAction("Authenticate", "User");
+                        await Authenticate(loginedUser.Id);
+                        TempData["Username"] = loginedUser.Name;
+                        return RedirectToAction("AllTopics", "Topic");
                     }
                     else
                     {
@@ -79,8 +85,29 @@ namespace Forum.Web.Controllers
             await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
 
-            TempData["UserId"] = userRepository.Query().FirstOrDefault(u => u.Email == email).Id;
+            await Authenticate(userRepository.Query().FirstOrDefault(u => u.Email == email).Id);
+            TempData["Username"] = user.Name;
+            return RedirectToAction("AllTopics", "Topic");
+        }
 
+        private async Task Authenticate(int userId)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userId.ToString())
+            };
+
+            ClaimsIdentity id = new ClaimsIdentity(
+                claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        [HttpGet]
+        [Route("~/User/Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Authenticate", "User");
         }
     }

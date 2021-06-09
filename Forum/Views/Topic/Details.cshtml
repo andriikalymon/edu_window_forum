@@ -1,0 +1,38 @@
+﻿@model (Forum.Domain.ViewModels.Topic.TopicToDetailsViewModel, Forum.Domain.ViewModels.Comment.CommentToAddViewModel)
+
+<h3 class="text-center">@Model.Item1.Name</h3>
+<br />
+@foreach (var tag in Model.Item1.Tags)
+{
+    <span style="color:cornflowerblue">#@tag</span>
+}
+<p>
+    @Model.Item1.Text
+</p>
+<br />
+@foreach (var comment in Model.Item1.Comments)
+{
+    <div class="card">
+        <div class="card-header">
+            <span style="font-weight:bold">@comment.UserName</span>
+            @if (comment.CanBeDeleted)
+            {
+                <span> - </span>
+                @Html.ActionLink("delete", "Delete", "Comment", new { id = comment.Id })
+            }
+        </div>
+        <div class="card-body">
+            <p class="card-text">@comment.Text</p>
+        </div>
+    </div>
+    <br />
+}
+@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+{
+    <textarea style="border-radius:5px" name="Text" cols="155" rows="3"></textarea>
+    <br>
+    <button type="submit" class="btn btn-primary">Comment</button>
+    <br>
+}
+<br />
+@Html.ActionLink("Back to list", "AllTopics", "Topic")
