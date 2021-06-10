@@ -1,0 +1,43 @@
+﻿@model Forum.Domain.ViewModels.Topic.TopicToCreateViewModel
+
+<script type="text/javascript">
+    $(function () {
+        $('#MyTags').multiselect({
+            includeSelectAllOption: true
+        });
+    });
+</script>
+
+<h3 class="text-center">Create topic</h3>
+<br />
+
+<div class="dl-horizontal">
+    <form asp-action="Create" asp-controller="Topic" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Text" class="control-label"></label>
+            <textarea style="border-radius:5px" cols="155" rows="3" asp-for="Text"></textarea>
+            <span asp-validation-for="Text" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Tags</label><br />
+            <select asp-for="Tags" class="form-control" id="MyTags" multiple
+                    asp-items="ViewBag.TagsList"></select>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-dark" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@Html.ActionLink("Back to list", "AllTopics", "Topic")

@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Forum.Domain.FluentValidation.User;
 using Forum.Domain.FluentValidation.Comment;
 using Forum.Domain.ViewModels.Comment;
+using Forum.Domain.FluentValidation.Topic;
+using Forum.Domain.ViewModels.Topic;
 
 namespace Forum.Web.Extensions
 {
@@ -13,6 +15,7 @@ namespace Forum.Web.Extensions
         {
             services.AddTransient<IValidator<AuthenticateUserViewModel>, AuthenticateUserViewModelValidator>();
             services.AddTransient<IValidator<CommentToAddViewModel>, CommentToAddViewModelValidator>();
+            services.AddTransient<IValidator<TopicToCreateViewModel>, TopicToCreateViewModelValidator>();
         }
     }
 }
