@@ -2,9 +2,9 @@
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace Forum.Web.Email
+namespace Forum.Web.Utils
 {
-    public class EmailService
+    public static class EmailService
     {
         public static async Task SendEmailAsync(
             string fromEmail, string fromPassword, string fromName, string toEmail, string topic, string text )

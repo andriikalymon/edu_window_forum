@@ -2,6 +2,7 @@
 using Forum.Data.Infrastructure;
 using Forum.Domain.ViewModels.Comment;
 using Forum.Domain.ViewModels.Topic;
+using Forum.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,19 +26,29 @@ namespace Forum.Web.Controllers
         }
             
         [Route("~/Topic/AllTopics")]
-        public IActionResult AllTopics()
+        public IActionResult AllTopics(string searchString)
         {
             int currentUserId = int.Parse(User.Identity.Name);
-
-            return View(topicRepository.Query().Select(
+            var topics = topicRepository.Query().Select(
                 t => new TopicToShowViewModel()
                 {
                     Id = t.Id,
                     Name = t.Name,
                     Text = t.Text.Substring(0, 180) + " ...",
+                    UserName = t.User.Name,
                     CanBeEdited = t.UserId == currentUserId,
                     Tags = t.Tags.Select(tag => tag.Name).ToList()
-                }));
+                });
+
+            if(string.IsNullOrEmpty(searchString))
+                return View(topics);
+            else
+            {
+                
+                return View(topics.AsEnumerable().Where(
+                    t => SearchService.Match(searchString, ArrayService.ConcatArray(t.Tags.ToArray(), t.Name, t.Text))));
+            }
+                
         }
 
         [Authorize]
@@ -109,6 +120,40 @@ namespace Forum.Web.Controllers
             }
 
             return RedirectToAction("AllTopics", "Topic");
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("~/Topic/Edit")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var topic = await topicRepository.GetByIdAsync(id);
+            return View(new TopicToEditViewModel()
+            {
+                Id = topic.Id,
+                Name = topic.Name,
+                Text = topic.Text
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("~/Topic/Edit")]
+        public async Task<IActionResult> Edit(TopicToEditViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var topic = await topicRepository.GetByIdAsync(model.Id);
+                topic.Name = model.Name;
+                topic.Text = model.Text;
+
+                await topicRepository.UpdateAsync(topic);
+                await topicRepository.SaveChangesAsync();
+
+                return RedirectToAction("AllTopics", "Topic");
+            }
+
+            return View(model);
         }
 
         [Authorize]

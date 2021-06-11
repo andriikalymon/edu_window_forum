@@ -1,0 +1,32 @@
+﻿@model Forum.Domain.ViewModels.Topic.TopicToEditViewModel
+
+<h3 class="text-center">Edit topic</h3>
+<br />
+
+
+<div class="dl-horizontal">
+    <form asp-action="Edit" asp-controller="Topic" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Text" class="control-label"></label>
+            <textarea style="border-radius:5px" cols="155" rows="7" asp-for="Text"></textarea>
+            <span asp-validation-for="Text" class="text-danger"></span>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="form-group">
+                        <input type="submit" value="Edit" class="btn btn-dark" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@Html.ActionLink("Back to list", "AllTopics", "Topic")

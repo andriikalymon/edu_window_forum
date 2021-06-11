@@ -3,6 +3,15 @@
 <h3 class="text-center">All our topics</h3>
 <br />
 
+<form class="form-inline" asp-action="AllTopics" method="get" asp-controller="Topic">
+    <div class="col-xs-6">
+        <input type="text" name="searchString" class="form-control" placeholder="Search what you want" />
+    </div>
+    <div class="p-2 bd-highlight">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
 @foreach (var item in Model)
 {
     <div class="card">
@@ -14,6 +23,7 @@
             }
         </div>
         <div class="card-body">
+            <h6 class="card-title">By @item.UserName</h6>
             <p class="card-text">@item.Text</p>
             <a class="btn btn-primary" asp-action="Details" asp-controller="Topic" asp-route-id="@item.Id">Read</a>
             @if (item.CanBeEdited)

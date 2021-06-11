@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Forum.Domain.ViewModels.User;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Web.Email;
+using Forum.Web.Utils;
 using ProjectConstants = Forum.Web.Constants.Constants;
 using System.Collections.Generic;
 using System.Security.Claims;

@@ -16,6 +16,7 @@ namespace Forum.Web.Extensions
             services.AddTransient<IValidator<AuthenticateUserViewModel>, AuthenticateUserViewModelValidator>();
             services.AddTransient<IValidator<CommentToAddViewModel>, CommentToAddViewModelValidator>();
             services.AddTransient<IValidator<TopicToCreateViewModel>, TopicToCreateViewModelValidator>();
+            services.AddTransient<IValidator<TopicToEditViewModel>, TopicToEditViewModelValidator>();
         }
     }
 }
