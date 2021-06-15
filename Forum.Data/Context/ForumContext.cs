@@ -23,6 +23,16 @@ namespace Forum.Data.Context
                 .WithMany(topic => topic.Tags)
                 .UsingEntity(j => j.ToTable("TopicTag"));
 
+            modelBuilder.Entity<Topic>()
+                .HasMany(t => t.UserLikes)
+                .WithMany(u => u.TopicLikes)
+                .UsingEntity(j => j.ToTable("TopicUserLike"));
+
+            modelBuilder.Entity<Topic>()
+                .HasMany(t => t.UserDislikes)
+                .WithMany(u => u.TopicDislikes)
+                .UsingEntity(j => j.ToTable("TopicUserDislike"));
+
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new TopicConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());

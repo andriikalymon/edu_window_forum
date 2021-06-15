@@ -11,5 +11,8 @@ namespace Forum.Data.Entities
 
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Topic> Topics { get; set; } = new List<Topic>();
+
+        public virtual ICollection<Topic> TopicLikes { get; set; } = new List<Topic>();
+        public virtual ICollection<Topic> TopicDislikes { get; set; } = new List<Topic>();
     }
 }
