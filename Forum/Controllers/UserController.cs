@@ -49,15 +49,18 @@ namespace Forum.Web.Controllers
 
                 string userEmail = user.Email.Replace("@", "%40");
                 string userPassword = user.Password;
-                string link = ProjectConstants.LocalLink + "/User/ConfirmEmail?Email=" + userEmail + "&Password=" + userPassword;
+                string link = 
+                    ProjectConstants.LocalLink + "/User/ConfirmEmail?Email=" + userEmail + "&Password=" + userPassword;
 
                 string text = $"Please confirm your registartion by following link: {link}";
-                string senderEmail = "edu.window.sender@gmail.com";
-                string senderPassword = "edu_window_sender_2021";
-                string senderName = "EduWindow";
-                string topic = "Authentication";
 
-                await EmailService.SendEmailAsync(senderEmail, senderPassword, senderName, user.Email, topic, text);
+                await EmailService.SendEmailAsync(
+                    ProjectConstants.SenderEmail, 
+                    ProjectConstants.SenderPassword, 
+                    ProjectConstants.SenderName, 
+                    user.Email, 
+                    ProjectConstants.Topic, 
+                    text);
 
                 return RedirectToAction("SuccessfulAuthenticate", "User");
             }

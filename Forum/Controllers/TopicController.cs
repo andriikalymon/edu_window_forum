@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProjectConstants = Forum.Web.Constants.Constants;
 
 namespace Forum.Web.Controllers
 {
@@ -18,11 +19,14 @@ namespace Forum.Web.Controllers
     {
         private readonly IRepository<Topic> topicRepository;
         private readonly IRepository<Tag> tagRepository;
+        private readonly IRepository<User> userRepository;
 
-        public TopicController(IRepository<Topic> topicRepository, IRepository<Tag> tagRepository)
+        public TopicController(IRepository<Topic> topicRepository, 
+            IRepository<Tag> tagRepository, IRepository<User> userRepository)
         {
             this.topicRepository = topicRepository;
             this.tagRepository = tagRepository;
+            this.userRepository = userRepository;
         }
             
         [Route("~/Topic/AllTopics")]
@@ -34,7 +38,7 @@ namespace Forum.Web.Controllers
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    Text = t.Text.Substring(0, 180) + " ...",
+                    Text = t.Text.Substring(0, ProjectConstants.MaxTextLengthToShow) + " ...",
                     UserName = t.User.Name,
                     CanBeEdited = t.UserId == currentUserId,
                     Tags = t.Tags.Select(tag => tag.Name).ToList()
@@ -43,12 +47,8 @@ namespace Forum.Web.Controllers
             if(string.IsNullOrEmpty(searchString))
                 return View(topics);
             else
-            {
-                
                 return View(topics.AsEnumerable().Where(
-                    t => SearchService.Match(searchString, ArrayService.ConcatArray(t.Tags.ToArray(), t.Name, t.Text))));
-            }
-                
+                    t => SearchService.Match(searchString, ArrayService.ConcatArray(t.Tags.ToArray(), t.Name, t.Text, t.UserName))));
         }
 
         [Authorize]
@@ -107,6 +107,9 @@ namespace Forum.Web.Controllers
                     Id = topic.Id,
                     Name = topic.Name,
                     Text = topic.Text,
+                    Dislikes = topic.UserDislikes.Count,
+                    Likes = topic.UserLikes.Count,
+                    CanBeLikeDislike = !(topic.UserId == currentUserId),
                     Comments = topic.Comments.Select(c => 
                     new CommentToShowViewModel()
                     {
@@ -164,6 +167,38 @@ namespace Forum.Web.Controllers
             await topicRepository.SaveChangesAsync();
 
             return RedirectToAction("AllTopics", "Topic");
+        }
+
+        [Authorize]
+        [Route("~/Topic/Like")]
+        public async Task<IActionResult> Like(int id)
+        {
+            int currentUserId = int.Parse(User.Identity.Name);
+            var topic = await topicRepository.GetByIdAsync(id);
+
+            if(!topic.UserLikes.Any(u => u.Id == currentUserId))
+            {
+                topic.UserLikes.Add(await userRepository.GetByIdAsync(currentUserId));
+                await topicRepository.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", "Topic", new { id });
+        }
+
+        [Authorize]
+        [Route("~/Topic/Dislike")]
+        public async Task<IActionResult> Dislike(int id)
+        {
+            int currentUserId = int.Parse(User.Identity.Name);
+            var topic = await topicRepository.GetByIdAsync(id);
+
+            if (!topic.UserDislikes.Any(u => u.Id == currentUserId))
+            {
+                topic.UserDislikes.Add(await userRepository.GetByIdAsync(currentUserId));
+                await topicRepository.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", "Topic", new { id });
         }
     }
 }

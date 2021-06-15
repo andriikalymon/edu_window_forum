@@ -9,7 +9,17 @@
 <p>
     @Model.Item1.Text
 </p>
-<br />
+@if (Model.Item1.CanBeLikeDislike)
+{
+    <a class="btn btn-outline-primary" asp-action="Like" asp-controller="Topic" asp-route-id="@Model.Item1.Id">
+        <i class="fa fa-thumbs-up"></i>@Model.Item1.Likes
+    </a>
+    <a class="btn btn-outline-primary" asp-action="Dislike" asp-controller="Topic" asp-route-id="@Model.Item1.Id">
+        <i class="fa fa-thumbs-down"></i>@Model.Item1.Dislikes
+    </a>
+    <br />
+    <br />
+}
 @foreach (var comment in Model.Item1.Comments)
 {
     <div class="card">

@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace Forum.Web.Controllers
 {
+    public class TimeClass
+    {
+        public DateTime Time { get; set; }
+    }
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
