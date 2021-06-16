@@ -117,7 +117,7 @@ namespace Forum.Web.Controllers
                         Text = c.Text,
                         UserName = c.User.Name,
                         CanBeDeleted = currentUserId == c.UserId
-                    }).ToList(),
+                    }).OrderByDescending(c => c.Id).ToList(),
                     Tags = topic.Tags.Select(tag => tag.Name).ToList()
                 }, new CommentToAddViewModel()));
             }

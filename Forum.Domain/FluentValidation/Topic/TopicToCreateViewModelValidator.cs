@@ -12,8 +12,12 @@ namespace Forum.Domain.FluentValidation.Topic
     {
         public TopicToCreateViewModelValidator()
         {
-            RuleFor(t => t.Name).NotEmpty().WithMessage("Topic title is required");
-            RuleFor(t => t.Text).NotEmpty().WithMessage("Topic text is required");
+            RuleFor(t => t.Name)
+                 .NotNull().WithMessage("Topic title is required")
+                 .NotEmpty().WithMessage("Topic title is required");
+            RuleFor(t => t.Text)
+                .NotNull().WithMessage("Topic text is required")
+                .NotEmpty().WithMessage("Topic text is required");
         }
     }
 }

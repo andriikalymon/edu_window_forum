@@ -47,7 +47,7 @@ namespace Forum.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/User/Authenticate");
             }
             app.UseStaticFiles();
 

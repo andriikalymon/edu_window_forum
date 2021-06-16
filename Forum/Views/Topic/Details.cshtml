@@ -20,6 +20,15 @@
     <br />
     <br />
 }
+@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+{
+    <input type="hidden" name="TopicId" value="@Model.Item1.Id" />
+    <textarea style="border-radius:5px" name="Text" cols="155" rows="3"></textarea>
+    <br>
+    <button type="submit" class="btn btn-primary">Comment</button>
+    <br>
+}
+<br />
 @foreach (var comment in Model.Item1.Comments)
 {
     <div class="card">
@@ -36,14 +45,6 @@
         </div>
     </div>
     <br />
-}
-@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
-{
-    <input type="hidden" name="TopicId" value="@Model.Item1.Id" />
-    <textarea style="border-radius:5px" name="Text" cols="155" rows="3"></textarea>
-    <br>
-    <button type="submit" class="btn btn-primary">Comment</button>
-    <br>
 }
 <br />
 @Html.ActionLink("Back to list", "AllTopics", "Topic")
